@@ -1,0 +1,59 @@
+qz-tray-enterprise/
+├── src/
+│   ├── Console/
+│   │   ├── InstallQzTrayCommand.php
+│   │   └── GenerateCertificateCommand.php
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── QzController.php
+│   │   │   ├── PrinterController.php
+│   │   │   ├── PrintController.php
+│   │   │   └── DiagnosticsController.php
+│   │   └── Middleware/
+│   │       └── QzTrayMiddleware.php
+│   ├── Services/
+│   │   ├── QzService.php
+│   │   ├── PrinterService.php
+│   │   └── PrintService.php
+│   ├── Resources/
+│   │   ├── views/
+│   │   │   ├── dashboard.blade.php
+│   │   │   ├── diagnostics.blade.php
+│   │   │   └── partials/
+│   │   │       └── qz-assets.blade.php
+│   │   └── assets/
+│   │       ├── js/
+│   │       │   ├── qz-tray/
+│   │       │   │   ├── qz-manager.js
+│   │       │   │   ├── printer-manager.js
+│   │       │   │   ├── print-engine.js
+│   │       │   │   └── diagnostics.js
+│   │       │   └── app.js
+│   │       └── css/
+│   │           └── qz-tray.css
+│   ├── Providers/
+│   │   ├── QzTrayServiceProvider.php
+│   │   └── QzTrayEventServiceProvider.php
+│   ├── Facades/
+│   │   └── QzTray.php
+│   ├── Events/
+│   │   ├── PrintJobQueued.php
+│   │   └── PrinterConnected.php
+│   ├── Listeners/
+│   │   └── LogPrintJob.php
+│   ├── Models/
+│   │   ├── QzPrinter.php
+│   │   └── PrintJob.php
+│   └── Exceptions/
+│       └── QzTrayException.php
+├── database/
+│   └── migrations/
+│       ├── create_qz_printers_table.php
+│       └── create_print_jobs_table.php
+├── config/
+│   └── qz-tray.php
+├── routes/
+│   └── web.php
+├── composer.json
+├── README.md
+└── LICENSE

@@ -1,0 +1,69 @@
+qz-tray-enterprise/
+├── src/
+│   ├── Console/
+│   │   ├── InstallQzTrayCommand.php
+│   │   └── GenerateCertificateCommand.php
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── QzController.php
+│   │   │   ├── PrinterController.php
+│   │   │   ├── PrintController.php
+│   │   │   └── DiagnosticsController.php
+│   │   └── Middleware/
+│   │       └── QzTrayMiddleware.php
+│   ├── Services/
+│   │   ├── QzService.php
+│   │   ├── PrinterService.php
+│   │   ├── PrintService.php
+│   │   └── SmartPrintService.php          ← NEW
+│   ├── Resources/
+│   │   ├── views/
+│   │   │   ├── dashboard.blade.php
+│   │   │   ├── diagnostics.blade.php
+│   │   │   └── partials/
+│   │   │       └── qz-assets.blade.php    ← UPDATED (with smart print)
+│   │   └── assets/
+│   │       ├── js/
+│   │       │   ├── qz-tray/
+│   │       │   │   ├── qz-manager.js
+│   │       │   │   ├── printer-manager.js
+│   │       │   │   ├── print-engine.js
+│   │       │   │   ├── diagnostics.js
+│   │       │   │   └── smart-print.js     ← NEW
+│   │       │   └── app.js
+│   │       └── css/
+│   │           └── qz-tray.css
+│   ├── Providers/
+│   │   ├── QzTrayServiceProvider.php
+│   │   └── QzTrayEventServiceProvider.php
+│   ├── Facades/
+│   │   └── QzTray.php
+│   ├── Events/
+│   │   ├── PrintJobQueued.php
+│   │   ├── PrinterConnected.php
+│   │   ├── SmartPrintSuccess.php          ← NEW
+│   │   └── SmartPrintFailed.php           ← NEW
+│   ├── Listeners/
+│   │   ├── LogPrintJob.php
+│   │   └── LogSmartPrint.php              ← NEW
+│   ├── Models/
+│   │   ├── QzPrinter.php
+│   │   ├── PrintJob.php
+│   │   └── SmartPrintLog.php              ← NEW
+│   ├── Exceptions/
+│   │   ├── QzTrayException.php
+│   │   └── SmartPrintException.php        ← NEW
+│   └── Helpers/
+│       └── smartPrint.php                 ← NEW
+├── database/
+│   └── migrations/
+│       ├── create_qz_printers_table.php
+│       ├── create_print_jobs_table.php
+│       └── create_smart_print_logs_table.php  ← NEW
+├── config/
+│   └── qz-tray.php                        ← UPDATED (smart print config)
+├── routes/
+│   └── web.php                            ← UPDATED (smart print routes)
+├── composer.json
+├── README.md
+└── LICENSE

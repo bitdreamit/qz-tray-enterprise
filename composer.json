@@ -1,0 +1,53 @@
+{
+    "name": "bitdreamit/qz-tray-enterprise",
+    "description": "Complete QZ Tray integration package for Laravel - Enterprise printing solution",
+    "keywords": [
+        "laravel",
+        "qz-tray",
+        "printing",
+        "enterprise",
+        "pos",
+        "receipt",
+        "label",
+        "thermal"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bit Dream IT",
+            "email": "support@bitdreamit.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "illuminate/support": "^9.0|^10.0|^11.0|^12.0",
+        "ext-openssl": "*",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^7.0|^8.0|^9.0|^10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "BitDreamIT\\QzTray\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "BitDreamIT\\QzTray\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "BitDreamIT\\QzTray\\Providers\\QzTrayServiceProvider"
+            ],
+            "aliases": {
+                "QzTray": "BitDreamIT\\QzTray\\Facades\\QzTray"
+            }
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
