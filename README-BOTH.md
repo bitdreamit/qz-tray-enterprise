@@ -4,7 +4,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/bitdreamit/qz-tray-enterprise.svg)](https://packagist.org/packages/bitdreamit/qz-tray-enterprise)
 [![License](https://img.shields.io/packagist/l/bitdreamit/qz-tray-enterprise.svg)](https://packagist.org/packages/bitdreamit/qz-tray-enterprise)
 [![PHP Version](https://img.shields.io/packagist/php-v/bitdreamit/qz-tray-enterprise.svg)](https://packagist.org/packages/bitdreamit/qz-tray-enterprise)
-[![Laravel Version](https://img.shields.io/badge/Laravel-9.x|10.x|11.x-brightgreen.svg)](https://laravel.com)
+[![Laravel Version](https://img.shields.io/badge/Laravel-9.x|10.x|11.x|12.x-brightgreen.svg)](https://laravel.com)
 
 Complete QZ Tray integration package for Laravel - The definitive enterprise printing solution with **Smart Print** technology. Now with intelligent fallback system that automatically chooses the best printing method.
 
