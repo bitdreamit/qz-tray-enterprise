@@ -10,6 +10,7 @@ class SmartPrintLog extends Model
 
     protected $fillable = [
         'user_id',
+        'tenant_id',
         'url',
         'type',
         'printer',
@@ -76,4 +77,30 @@ class SmartPrintLog extends Model
     {
         return $this->created_at->format('Y-m-d H:i:s');
     }
+
+    protected static function booted()
+    {
+        parent::booted();
+
+        static::creating(function ($model) {
+
+            if (! config('qz-tray.tenancy.enabled')) {
+                return;
+            }
+
+            if (! auth()->check()) {
+                return;
+            }
+
+            $tenantColumn = config('qz-tray.tenancy.tenant_column', 'tenant_id');
+
+            if (
+                isset(auth()->user()->{$tenantColumn}) &&
+                empty($model->{$tenantColumn})
+            ) {
+                $model->{$tenantColumn} = auth()->user()->{$tenantColumn};
+            }
+        });
+    }
+
 }

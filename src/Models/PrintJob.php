@@ -11,6 +11,7 @@ class PrintJob extends Model
 
     protected $fillable = [
         'user_id',
+        'tenant_id',
         'printer',
         'type',
         'data',
@@ -26,7 +27,7 @@ class PrintJob extends Model
         'queued_at',
         'started_at',
         'completed_at',
-        'cancelled_at'
+        'cancelled_at',
     ];
 
     protected $casts = [
@@ -36,26 +37,35 @@ class PrintJob extends Model
         'started_at' => 'datetime',
         'completed_at' => 'datetime',
         'cancelled_at' => 'datetime',
-        'copies' => 'integer'
+        'copies' => 'integer',
     ];
 
     /**
      * Status constants
      */
     const STATUS_QUEUED = 'queued';
+
     const STATUS_PROCESSING = 'processing';
+
     const STATUS_COMPLETED = 'completed';
+
     const STATUS_FAILED = 'failed';
+
     const STATUS_CANCELLED = 'cancelled';
 
     /**
      * Type constants
      */
     const TYPE_RAW = 'raw';
+
     const TYPE_HTML = 'html';
+
     const TYPE_PDF = 'pdf';
+
     const TYPE_IMAGE = 'image';
+
     const TYPE_ZPL = 'zpl';
+
     const TYPE_ESCPOS = 'escpos';
 
     /**
@@ -96,12 +106,12 @@ class PrintJob extends Model
     public function getTypeBadgeAttribute(): string
     {
         $badges = [
-                self::TYPE_RAW => '<span class="badge bg-secondary">Raw</span>',
-                self::TYPE_HTML => '<span class="badge bg-primary">HTML</span>',
-                self::TYPE_PDF => '<span class="badge bg-danger">PDF</span>',
-                self::TYPE_IMAGE => '<span class="badge bg-info">Image</span>',
-                self::TYPE_ZPL => '<span class="badge bg-success">ZPL</span>',
-                self::TYPE_ESCPOS => '<span class="badge bg-warning">ESC/POS</span>',
+            self::TYPE_RAW => '<span class="badge bg-secondary">Raw</span>',
+            self::TYPE_HTML => '<span class="badge bg-primary">HTML</span>',
+            self::TYPE_PDF => '<span class="badge bg-danger">PDF</span>',
+            self::TYPE_IMAGE => '<span class="badge bg-info">Image</span>',
+            self::TYPE_ZPL => '<span class="badge bg-success">ZPL</span>',
+            self::TYPE_ESCPOS => '<span class="badge bg-warning">ESC/POS</span>',
         ];
 
         return $badges[$this->type] ?? '<span class="badge bg-dark">Unknown</span>';
@@ -112,7 +122,7 @@ class PrintJob extends Model
      */
     public function getProcessingTimeAttribute(): ?int
     {
-        if (!$this->started_at || !$this->completed_at) {
+        if (! $this->started_at || ! $this->completed_at) {
             return null;
         }
 
@@ -124,7 +134,7 @@ class PrintJob extends Model
      */
     public function getQueueTimeAttribute(): ?int
     {
-        if (!$this->queued_at || !$this->started_at) {
+        if (! $this->queued_at || ! $this->started_at) {
             return null;
         }
 
@@ -136,7 +146,7 @@ class PrintJob extends Model
      */
     public function getTotalTimeAttribute(): ?int
     {
-        if (!$this->queued_at || !$this->completed_at) {
+        if (! $this->queued_at || ! $this->completed_at) {
             return null;
         }
 
@@ -271,7 +281,7 @@ class PrintJob extends Model
 
     /**
      * Scope: Today's jobs
-    */
+     */
     public function scopeToday($query)
     {
         return $query->whereDate('created_at', today());
@@ -282,20 +292,54 @@ class PrintJob extends Model
      */
     public static function getStats(): array
     {
-        return [
-            'total' => self::count(),
-            'completed' => self::completed()->count(),
-            'failed' => self::failed()->count(),
-            'pending' => self::pending()->count(),
-            'today' => self::today()->count(),
-            'avg_processing_time' => self::completed()
-                    ->whereNotNull('started_at')
-                    ->whereNotNull('completed_at')
-                    ->avg(\DB::raw('TIMESTAMPDIFF(SECOND, started_at, completed_at)')) ?? 0,
-            'avg_queue_time' => self::completed()
-                    ->whereNotNull('queued_at')
-                    ->whereNotNull('started_at')
-                    ->avg(\DB::raw('TIMESTAMPDIFF(SECOND, queued_at, started_at)')) ?? 0,
-        ];
+        return self::query()
+            ->selectRaw('
+            COUNT(*) as total,
+            SUM(status = "completed") as completed,
+            SUM(status = "failed") as failed,
+            SUM(status = "pending") as pending,
+            SUM(DATE(created_at) = CURDATE()) as today,
+            AVG(
+                CASE
+                    WHEN started_at IS NOT NULL AND completed_at IS NOT NULL
+                    THEN TIMESTAMPDIFF(SECOND, started_at, completed_at)
+                END
+            ) as avg_processing_time,
+            AVG(
+                CASE
+                    WHEN queued_at IS NOT NULL AND started_at IS NOT NULL
+                    THEN TIMESTAMPDIFF(SECOND, queued_at, started_at)
+                END
+            ) as avg_queue_time
+        ')
+            ->first()
+            ->toArray();
     }
+
+
+    protected static function booted()
+    {
+        parent::booted();
+
+        static::creating(function ($model) {
+
+            if (! config('qz-tray.tenancy.enabled')) {
+                return;
+            }
+
+            if (! auth()->check()) {
+                return;
+            }
+
+            $tenantColumn = config('qz-tray.tenancy.tenant_column', 'tenant_id');
+
+            if (
+                isset(auth()->user()->{$tenantColumn}) &&
+                empty($model->{$tenantColumn})
+            ) {
+                $model->{$tenantColumn} = auth()->user()->{$tenantColumn};
+            }
+        });
+    }
+
 }

@@ -10,6 +10,7 @@ class QzPrinter extends Model
     protected $table = 'qz_printers';
 
     protected $fillable = [
+        'tenant_id',
         'name',
         'type',
         'connection_type',
@@ -157,4 +158,29 @@ class QzPrinter extends Model
     {
         return $query->where('last_used', '>=', now()->subHours($hours));
     }
+    protected static function booted()
+    {
+        parent::booted();
+
+        static::creating(function ($model) {
+
+            if (! config('qz-tray.tenancy.enabled')) {
+                return;
+            }
+
+            if (! auth()->check()) {
+                return;
+            }
+
+            $tenantColumn = config('qz-tray.tenancy.tenant_column', 'tenant_id');
+
+            if (
+                isset(auth()->user()->{$tenantColumn}) &&
+                empty($model->{$tenantColumn})
+            ) {
+                $model->{$tenantColumn} = auth()->user()->{$tenantColumn};
+            }
+        });
+    }
+
 }
