@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use BitDreamIT\QzTray\Http\Controllers\QzController;
-use BitDreamIT\QzTray\Http\Controllers\PrinterController;
 use BitDreamIT\QzTray\Http\Controllers\PrintController;
+use BitDreamIT\QzTray\Http\Controllers\PrinterController;
+use BitDreamIT\QzTray\Http\Controllers\QzController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,7 +17,7 @@ use BitDreamIT\QzTray\Http\Controllers\PrintController;
 Route::group([
     'prefix' => config('qz-tray.ui.dashboard_route', '/qz-tray'),
     'middleware' => config('qz-tray.middleware', ['web', 'auth']),
-    'as' => 'qz-tray.'
+    'as' => 'qz-tray.',
 ], function () {
 
     // Dashboard
@@ -33,7 +33,6 @@ Route::group([
 
     Route::post('/sign', [QzController::class, 'sign'])
         ->name('sign');
-
 
     // API endpoints
     Route::prefix('/api')->group(function () {

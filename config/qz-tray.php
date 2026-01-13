@@ -37,7 +37,7 @@ return [
         'allow_localhost' => env('QZ_ALLOW_LOCALHOST', true),
         'signature_algorithm' => env('QZ_SIGNATURE_ALGORITHM', 'SHA512'),
         'private_key' => env('QZ_PRIVATE_KEY', ''),
-        'certificate_path' => storage_path(env('QZ_CERTIFICATE_PATH', 'app/certs/')),
+        'certificate_path' => env('QZ_CERTIFICATE_PATH', 'certs'),
     ],
 
     /*

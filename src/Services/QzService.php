@@ -2,14 +2,14 @@
 
 namespace BitDreamIT\QzTray\Services;
 
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
 use BitDreamIT\QzTray\Exceptions\QzTrayException;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class QzService
 {
-    protected $config;
+    protected array $config;
 
     public function __construct(array $config)
     {
@@ -21,9 +21,9 @@ class QzService
      */
     public function getCertificate()
     {
-        $certPath = $this->config['security']['certificate_path'] . 'digital-certificate.txt';
+        $certPath = $this->config['security']['certificate_path'].'digital-certificate.txt';
 
-        if (!Storage::exists($certPath)) {
+        if (! Storage::exists($certPath)) {
             $this->generateCertificate();
         }
 
@@ -37,16 +37,16 @@ class QzService
     {
         $certPath = $this->config['security']['certificate_path'];
 
-        if (!Storage::exists($certPath)) {
+        if (! Storage::exists($certPath)) {
             Storage::makeDirectory($certPath);
         }
 
         // Generate certificate
-        $certificate = "-----BEGIN CERTIFICATE-----\n" .
-            base64_encode(openssl_random_pseudo_bytes(2048)) .
+        $certificate = "-----BEGIN CERTIFICATE-----\n".
+            base64_encode(openssl_random_pseudo_bytes(2048)).
             "\n-----END CERTIFICATE-----";
 
-        Storage::put($certPath . 'digital-certificate.txt', $certificate);
+        Storage::put($certPath.'digital-certificate.txt', $certificate);
 
         Log::info('QZ Tray certificate generated', ['path' => $certPath]);
     }
@@ -99,7 +99,7 @@ class QzService
                 app()->environment('local'),
         ];
 
-        return !in_array(false, $requirements, true);
+        return ! in_array(false, $requirements, true);
     }
 
     /**
